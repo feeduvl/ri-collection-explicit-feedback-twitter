@@ -1,0 +1,159 @@
+---
+swagger: "2.0"
+info:
+  description: This API returns a json, containing a list of Tweets.
+  version: "1.0.1"
+  title: Get Tweets
+  contact:
+    email: stanik@informatik.uni-hamburg.de
+host: 217.172.12.199:9624
+schemes:
+- http
+paths:
+  /hitec/crawl/tweets/mention/{account_name}/history-in-days/{days}/lang/{lang}:
+    get:
+      summary: Get a list of Tweets that mention a specific account for a defined time-frame.
+      description: Get a list of Tweets that mention a specific account for a defined time-frame.
+      operationId: getTweetsFromAccountByDays
+      produces:
+      - application/json
+      parameters:
+      - name: account_name
+        in: path
+        description: the unique account name of a twitter user.
+        required: true
+        type: string
+      - name: days
+        in: path
+        description: time-frame of days we want to crawl. The days are counted backwards from today.For instance, day=1 means crawl today and yesterday. The maximum number of days is 30 because otherwise the crawl process takes too much time and produces too big output.
+        required: true
+        type:  integer
+        maximum: 30
+        minimum: 0
+        format: integer
+      - name: lang
+        in: path
+        description: the language the tweet was oficially labeled with
+        required: true
+        type: string
+      responses:
+        200:
+          description: Tweets that mention the given account, in the given language, from the dpecified days in the past.
+          schema:
+            $ref: "#/definitions/Tweet"
+        400:
+          description: bad input parameter or no tweet could be retrieved.
+          
+  /hitec/crawl/tweets/mention/{account_name}/from/{YYYY-mm-dd}/lang/{lang}:
+    get:
+      summary: Get a list of Tweets in a given language that mentions the specified account.
+      description: Get a list of Tweets in a given language that mentions the specified account.
+      operationId: getTweetsFromAccountFromDateInLang
+      produces:
+      - application/json
+      parameters:
+      - name: account_name
+        in: path
+        description: the unique account name of a twitter user.
+        required: true
+        type: string
+      - name: YYYY-mm-dd
+        in: path
+        description: the date from which on we want to retrieve tweets
+        required: true
+        type: string
+      - name: lang
+        in: path
+        description: the language the tweet was oficially labeled with
+        required: true
+        type: string
+      responses:
+        200:
+          description: Tweet conversations.
+          schema:
+            $ref: "#/definitions/Tweet"
+        400:
+          description: bad input parameter or no tweet could be retrieved.
+
+  /hitec/crawl/tweets/mention/{account_name}/lang/{lang}:
+    get:
+      summary: Get a list of all recent Tweets. Perfoms pagination and therefore takes a long time (>30min).
+      description: Get a list of all recent Tweets. Perfoms pagination and therefore takes a long time (>30min).
+      operationId: getTweetsFromAccountInLang
+      produces:
+      - application/json
+      parameters:
+      - name: account_name
+        in: path
+        description: the unique account name of a twitter user.
+        required: true
+        type: string
+      - name: lang
+        in: path
+        description: the language the tweet was oficially labeled with
+        required: true
+        type: string
+      responses:
+        200:
+          description: list of tweets.
+          schema:
+            $ref: "#/definitions/Tweet"
+        400:
+          description: bad input parameter or no tweet could be retrieved.
+
+  /hitec/crawl/tweets/mention/{account_name}/lang/{lang}/fast:
+    get:
+      summary: get a list of all available recent Tweets until the API limit is reached. Usually takes a few seconds.
+      description: get a list of all available recent Tweets until the API limit is reached. Usually takes a few seconds.
+      operationId: getTweetsFromAccountInLangFast
+      produces:
+      - application/json
+      parameters:
+      - name: account_name
+        in: path
+        description: the unique account name of a twitter user.
+        required: true
+        type: string
+      - name: lang
+        in: path
+        description: the language the tweet was oficially labeled with
+        required: true
+        type: string
+      responses:
+        200:
+          description: list of tweets.
+          schema:
+            $ref: "#/definitions/Tweet"
+        400:
+          description: bad input parameter or no tweet could be retrieved.
+definitions: 
+  Tweet:
+    type: object
+    properties:
+      created_at:
+        type:  integer
+        example: 20181201
+      favorite_count: 
+        type:  integer
+        example: 1
+      retweet_count:
+        type:  integer
+        example: 1
+      status_id:
+        type: string
+        example: 933476766408200193
+      in_reply_to_screen_name:
+        type: string
+        example: musteraccount
+      lang:
+        type: string
+        example: en
+      text:
+        type: string
+        example: "@maxmustermannThanks for your message!"
+      user_name:
+        type: string
+        example: maxmustermann
+      tweet_class: 
+        type: string
+        example: problem_report
