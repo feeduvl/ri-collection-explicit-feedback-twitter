@@ -44,8 +44,15 @@ func getTweetsFromAccountByDays(w http.ResponseWriter, r *http.Request) {
 	tweets := TweetsFromAnacondaCrawler(anacondaTweets)
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(tweets)
+	err = json.NewEncoder(w).Encode(tweets)
+	if err != nil {
+		log.Printf("ERR cannot encode the following tweets %v\n", err)
+		log.Println(tweets)
+		w.WriteHeader(http.StatusInternalServerError)
+	} else {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+	}
 }
 
 func writeToJSONFile(tweets []Tweet) {
@@ -76,11 +83,19 @@ func getTweetsFromDate(w http.ResponseWriter, r *http.Request) {
 	tweets := TweetsFromAnacondaCrawler(anacondaTweets)
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(tweets)
+	err := json.NewEncoder(w).Encode(tweets)
+	if err != nil {
+		log.Printf("ERR cannot encode the following tweets %v\n", err)
+		log.Println(tweets)
+		w.WriteHeader(http.StatusInternalServerError)
+	} else {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+	}
 }
 
 func getTweetsInLang(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("getTweetsInLang called")
 	params := mux.Vars(r)
 	accountName := params["account_name"]
 	lang := params["lang"]
@@ -91,11 +106,19 @@ func getTweetsInLang(w http.ResponseWriter, r *http.Request) {
 	tweets := TweetsFromAnacondaCrawler(anacondaTweets)
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(tweets)
+	err := json.NewEncoder(w).Encode(tweets)
+	if err != nil {
+		log.Printf("ERR cannot encode the following tweets %v\n", err)
+		log.Println(tweets)
+		w.WriteHeader(http.StatusInternalServerError)
+	} else {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+	}
 }
 
 func getTweetsInLangFast(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("getTweetsInLangFast called")
 	params := mux.Vars(r)
 	accountName := params["account_name"]
 	lang := params["lang"]
@@ -106,8 +129,15 @@ func getTweetsInLangFast(w http.ResponseWriter, r *http.Request) {
 	tweets := TweetsFromAnacondaCrawler(anacondaTweets)
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(tweets)
+	err := json.NewEncoder(w).Encode(tweets)
+	if err != nil {
+		log.Printf("ERR cannot encode the following tweets %v\n", err)
+		log.Println(tweets)
+		w.WriteHeader(http.StatusInternalServerError)
+	} else {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+	}
 }
 
 func getTweetsWithHashtagInLang(w http.ResponseWriter, r *http.Request) {
@@ -119,6 +149,13 @@ func getTweetsWithHashtagInLang(w http.ResponseWriter, r *http.Request) {
 	tweets := TweetsFromAnacondaCrawler(anacondaTweets)
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(tweets)
+	err := json.NewEncoder(w).Encode(tweets)
+	if err != nil {
+		log.Printf("ERR cannot encode the following tweets %v\n", err)
+		log.Println(tweets)
+		w.WriteHeader(http.StatusInternalServerError)
+	} else {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+	}
 }
