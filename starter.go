@@ -50,23 +50,8 @@ func getTweetsFromAccountByDays(w http.ResponseWriter, r *http.Request) {
 		log.Println(tweets)
 		w.WriteHeader(http.StatusInternalServerError)
 	} else {
-		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 	}
-}
-
-func writeToJSONFile(tweets []Tweet) {
-	fmt.Printf("----\nwe collected %v tweets\n---\n", len(tweets))
-	jsonData, err := json.Marshal(tweets)
-	jsonFile, err := os.Create("./Tweets.json")
-	if err != nil {
-		panic(err)
-	}
-	defer jsonFile.Close()
-
-	jsonFile.Write(jsonData)
-	jsonFile.Close()
-	fmt.Println("JSON data written to ", jsonFile.Name())
 }
 
 func getTweetsFromDate(w http.ResponseWriter, r *http.Request) {
@@ -89,7 +74,6 @@ func getTweetsFromDate(w http.ResponseWriter, r *http.Request) {
 		log.Println(tweets)
 		w.WriteHeader(http.StatusInternalServerError)
 	} else {
-		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 	}
 }
@@ -112,16 +96,16 @@ func getTweetsInLang(w http.ResponseWriter, r *http.Request) {
 		log.Println(tweets)
 		w.WriteHeader(http.StatusInternalServerError)
 	} else {
-		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 	}
 }
 
 func getTweetsInLangFast(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("getTweetsInLangFast called")
 	params := mux.Vars(r)
 	accountName := params["account_name"]
 	lang := params["lang"]
+
+	log.Printf("getTweetsInLangFast called, for account %v\n", accountName)
 
 	var anacondaTweets []anaconda.Tweet
 	timeFrame := TimeFrame{}
@@ -135,7 +119,6 @@ func getTweetsInLangFast(w http.ResponseWriter, r *http.Request) {
 		log.Println(tweets)
 		w.WriteHeader(http.StatusInternalServerError)
 	} else {
-		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 	}
 }
@@ -155,7 +138,6 @@ func getTweetsWithHashtagInLang(w http.ResponseWriter, r *http.Request) {
 		log.Println(tweets)
 		w.WriteHeader(http.StatusInternalServerError)
 	} else {
-		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 	}
 }
