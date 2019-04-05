@@ -90,7 +90,7 @@ func getTweetsInLang(w http.ResponseWriter, r *http.Request) {
 
 	var anacondaTweets []anaconda.Tweet
 	timeFrame := TimeFrame{}
-	anacondaTweets = Crawl(lang, timeFrame, accountName, false)
+	anacondaTweets = Crawl(lang, timeFrame, accountName, true)
 	tweets := TweetsFromAnacondaCrawler(anacondaTweets)
 
 	w.Header().Set("Content-Type", "application/json")

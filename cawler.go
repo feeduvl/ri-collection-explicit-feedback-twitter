@@ -47,8 +47,8 @@ func Crawl(l string, t TimeFrame, accountName string, paginate bool) []anaconda.
 		if len(tweets) == tweetsSize { // exit condition, no new tweets added
 			if crawlLimitExceeded <= 1 && canPaginateTweets {
 				crawlLimitExceeded++
-				log.Printf("sleep 16 minutes\n")
-				time.Sleep(16 * time.Minute) // sleep for 16 minutes in case we reached our crawl limit
+				log.Printf("sleep 30 seconds\n")
+				time.Sleep(30 * time.Second) // sleep for 30 seconds in case we reached our crawl limit
 			} else {
 				canPaginateTweets = false
 			}
