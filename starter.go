@@ -17,8 +17,8 @@ func main() {
 	log.SetOutput(os.Stdout)
 
 	router := mux.NewRouter()
-	// router.HandleFunc("/hitec/crawl/tweets/mention/{account_name}/history-in-days/{days}/lang/{lang}", getTweetsFromAccountByDays).Methods("GET")
-	// router.HandleFunc("/hitec/crawl/tweets/mention/{account_name}/from/{date}/lang/{lang}", getTweetsFromDate).Methods("GET")
+	router.HandleFunc("/hitec/crawl/tweets/mention/{account_name}/history-in-days/{days}/lang/{lang}", getTweetsFromAccountByDays).Methods("GET")
+	router.HandleFunc("/hitec/crawl/tweets/mention/{account_name}/from/{date}/lang/{lang}", getTweetsFromDate).Methods("GET")
 	router.HandleFunc("/hitec/crawl/tweets/mention/{account_name}/lang/{lang}", getTweetsInLang).Methods("GET")
 	router.HandleFunc("/hitec/crawl/tweets/mention/{account_name}/lang/{lang}/fast", getTweetsInLangFast).Methods("GET")
 
@@ -34,10 +34,14 @@ func getTweetsFromAccountByDays(w http.ResponseWriter, r *http.Request) {
 	days, err := strconv.Atoi(params["days"])
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
 	var anacondaTweets []anaconda.Tweet
 	timeFrame := TimeFrameFromDays(days)
+
+	log.Printf("getTweetsFromAccountByDays for timeframe%v, and account %v\n", timeFrame, accountName)
+
 	if timeFrame.IsValid() {
 		anacondaTweets = Crawl(lang, timeFrame, accountName, false)
 	}

@@ -29,23 +29,25 @@ func Crawl(l string, t TimeFrame, accountName string, paginate bool) []anaconda.
 	var crawlLimitExceeded int           // used for pagination
 
 	api := anaconda.NewTwitterApiWithCredentials(accessKey, accessSecret, consumerKey, consumerSecret)
-
 	for canPaginateTweets { // pagination
 		query, vals := buildQuery(l, 450, t, accountName, tweetMaxID)
+		log.Printf("query: %v\n", query)
 		searchResult, err := api.GetSearch(query, vals)
 		if err != nil {
 			log.Fatal(err)
 		}
+		log.Printf("start crawling\n")
 		for _, tweet := range searchResult.Statuses {
 			tweets = append(tweets, tweet)
 			if tweet.Id < tweetMaxID {
-				tweetMaxID = tweet.Id - 1
+				tweetMaxID = tweet.Id
 			}
 		}
 		canPaginateTweets = paginate
 		if len(tweets) == tweetsSize { // exit condition, no new tweets added
-			if crawlLimitExceeded <= 1 {
+			if crawlLimitExceeded <= 1 && canPaginateTweets {
 				crawlLimitExceeded++
+				log.Printf("sleep 16 minutes\n")
 				time.Sleep(16 * time.Minute) // sleep for 16 minutes in case we reached our crawl limit
 			} else {
 				canPaginateTweets = false
@@ -60,7 +62,7 @@ func Crawl(l string, t TimeFrame, accountName string, paginate bool) []anaconda.
 func buildQuery(l string, count int, t TimeFrame, accountName string, tweetMaxID int64) (string, map[string][]string) {
 	var query string
 	if t.IsValid() {
-		query = fmt.Sprintf("since:%s until:%s to:%s max_id:%d include_entities:%v", t.since, t.until, accountName, tweetMaxID, false)
+		query = fmt.Sprintf("(to:%s) since:%s until:%s&src=typed_query", accountName, t.since, t.until)
 	} else {
 		query = fmt.Sprintf("to:%s max_id:%d", accountName, tweetMaxID)
 	}
