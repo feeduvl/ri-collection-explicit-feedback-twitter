@@ -110,3 +110,13 @@ func buildHashtagQuery(l string, count int, hashtags []string) (string, map[stri
 
 	return query, vals
 }
+
+func AccountNameExists(accountName string) bool {
+	api := anaconda.NewTwitterApiWithCredentials(accessKey, accessSecret, consumerKey, consumerSecret)
+	users, err := api.GetUsersLookup(accountName, url.Values{})
+
+	if err != nil || len(users) == 0 {
+		return false
+	}
+	return true
+}

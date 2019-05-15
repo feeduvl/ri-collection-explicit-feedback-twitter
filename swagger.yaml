@@ -8,7 +8,7 @@ info:
     email: stanik@informatik.uni-hamburg.de
 host: 217.172.12.199:9624
 schemes:
-- http
+  - http
 paths:
   /hitec/crawl/tweets/mention/{account_name}/history-in-days/{days}/lang/{lang}:
     get:
@@ -16,26 +16,26 @@ paths:
       description: Get a list of Tweets that mention a specific account for a defined time-frame.
       operationId: getTweetsFromAccountByDays
       produces:
-      - application/json
+        - application/json
       parameters:
-      - name: account_name
-        in: path
-        description: the unique account name of a twitter user.
-        required: true
-        type: string
-      - name: days
-        in: path
-        description: time-frame of days we want to crawl. The days are counted backwards from today.For instance, day=1 means crawl today and yesterday. The maximum number of days is 30 because otherwise the crawl process takes too much time and produces too big output.
-        required: true
-        type:  integer
-        maximum: 30
-        minimum: 0
-        format: integer
-      - name: lang
-        in: path
-        description: the language the tweet was oficially labeled with
-        required: true
-        type: string
+        - name: account_name
+          in: path
+          description: the unique account name of a twitter user.
+          required: true
+          type: string
+        - name: days
+          in: path
+          description: time-frame of days we want to crawl. The days are counted backwards from today.For instance, day=1 means crawl today and yesterday. The maximum number of days is 30 because otherwise the crawl process takes too much time and produces too big output.
+          required: true
+          type: integer
+          maximum: 30
+          minimum: 0
+          format: integer
+        - name: lang
+          in: path
+          description: the language the tweet was oficially labeled with
+          required: true
+          type: string
       responses:
         200:
           description: Tweets that mention the given account, in the given language, from the dpecified days in the past.
@@ -43,30 +43,30 @@ paths:
             $ref: "#/definitions/Tweet"
         400:
           description: bad input parameter or no tweet could be retrieved.
-          
+
   /hitec/crawl/tweets/mention/{account_name}/from/{YYYY-mm-dd}/lang/{lang}:
     get:
       summary: Get a list of Tweets in a given language that mentions the specified account.
       description: Get a list of Tweets in a given language that mentions the specified account.
       operationId: getTweetsFromAccountFromDateInLang
       produces:
-      - application/json
+        - application/json
       parameters:
-      - name: account_name
-        in: path
-        description: the unique account name of a twitter user.
-        required: true
-        type: string
-      - name: YYYY-mm-dd
-        in: path
-        description: the date from which on we want to retrieve tweets
-        required: true
-        type: string
-      - name: lang
-        in: path
-        description: the language the tweet was oficially labeled with
-        required: true
-        type: string
+        - name: account_name
+          in: path
+          description: the unique account name of a twitter user.
+          required: true
+          type: string
+        - name: YYYY-mm-dd
+          in: path
+          description: the date from which on we want to retrieve tweets
+          required: true
+          type: string
+        - name: lang
+          in: path
+          description: the language the tweet was oficially labeled with
+          required: true
+          type: string
       responses:
         200:
           description: Tweet conversations.
@@ -81,18 +81,18 @@ paths:
       description: Get a list of all recent Tweets. Perfoms pagination and therefore takes a long time (>30min).
       operationId: getTweetsFromAccountInLang
       produces:
-      - application/json
+        - application/json
       parameters:
-      - name: account_name
-        in: path
-        description: the unique account name of a twitter user.
-        required: true
-        type: string
-      - name: lang
-        in: path
-        description: the language the tweet was oficially labeled with
-        required: true
-        type: string
+        - name: account_name
+          in: path
+          description: the unique account name of a twitter user.
+          required: true
+          type: string
+        - name: lang
+          in: path
+          description: the language the tweet was oficially labeled with
+          required: true
+          type: string
       responses:
         200:
           description: list of tweets.
@@ -107,18 +107,18 @@ paths:
       description: get a list of all available recent Tweets until the API limit is reached. Usually takes a few seconds.
       operationId: getTweetsFromAccountInLangFast
       produces:
-      - application/json
+        - application/json
       parameters:
-      - name: account_name
-        in: path
-        description: the unique account name of a twitter user.
-        required: true
-        type: string
-      - name: lang
-        in: path
-        description: the language the tweet was oficially labeled with
-        required: true
-        type: string
+        - name: account_name
+          in: path
+          description: the unique account name of a twitter user.
+          required: true
+          type: string
+        - name: lang
+          in: path
+          description: the language the tweet was oficially labeled with
+          required: true
+          type: string
       responses:
         200:
           description: list of tweets.
@@ -126,18 +126,38 @@ paths:
             $ref: "#/definitions/Tweet"
         400:
           description: bad input parameter or no tweet could be retrieved.
-definitions: 
+  /hitec/crawl/tweets/{account_name}/exists:
+    get:
+      summary: check if a specified Twitter account exists.
+      description: check if a specified Twitter account exists.
+      operationId: getAccountNameExists
+      produces:
+        - application/json
+      parameters:
+        - name: account_name
+          in: path
+          description: the unique account name of a twitter user.
+          required: true
+          type: string
+      responses:
+        200:
+          description: response message stating if the specified account exists.
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+        500:
+          description: bad request
+definitions:
   Tweet:
     type: object
     properties:
       created_at:
-        type:  integer
+        type: integer
         example: 20181201
-      favorite_count: 
-        type:  integer
+      favorite_count:
+        type: integer
         example: 1
       retweet_count:
-        type:  integer
+        type: integer
         example: 1
       status_id:
         type: string
@@ -154,6 +174,15 @@ definitions:
       user_name:
         type: string
         example: maxmustermann
-      tweet_class: 
+      tweet_class:
         type: string
         example: problem_report
+  ResponseMessage:
+    type: object
+    properties:
+      account_exists:
+        type: boolean
+        example: true
+      message:
+        type: string
+        example: Account VodafoneUK found on Twitter

@@ -154,3 +154,30 @@ func TestGetTweetsWithHashtagInLang(t *testing.T) {
 		t.Errorf("response length differs. Expected %s .\n Got %d instead", "number greater than 0", len(tweets))
 	}
 }
+func TestGetAccountNameExists(t *testing.T) {
+	fmt.Println("start TestGetAccountNameExists")
+	var method = "GET"
+	var endpoint = "/hitec/crawl/tweets/%s/exists"
+
+	/*
+	 * test for Success
+	 */
+	endpointSucess := fmt.Sprintf(endpoint, "VodafoneUK")
+	req := buildRequest(method, endpointSucess, nil, t)
+	rr := executeRequest(req)
+
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("Status code differs. Expected %d .\n Got %d instead", http.StatusOK, status)
+	}
+
+	/*
+	 * test for Failure
+	 */
+	endpointFailure := fmt.Sprintf(endpoint, "VodafoneUK")
+	req = buildRequest(method, endpointFailure, nil, t)
+	rr = executeRequest(req)
+
+	if status := rr.Code; status != http.StatusInternalServerError {
+		t.Errorf("Status code differs. Expected %d .\n Got %d instead", http.StatusInternalServerError, status)
+	}
+}

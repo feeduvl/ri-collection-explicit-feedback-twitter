@@ -17,6 +17,7 @@ func main() {
 	log.SetOutput(os.Stdout)
 
 	router := mux.NewRouter()
+	router.HandleFunc("/hitec/crawl/tweets/{account_name}/exists", getAccountNameExists).Methods("GET")
 	router.HandleFunc("/hitec/crawl/tweets/mention/{account_name}/history-in-days/{days}/lang/{lang}", getTweetsFromAccountByDays).Methods("GET")
 	router.HandleFunc("/hitec/crawl/tweets/mention/{account_name}/from/{date}/lang/{lang}", getTweetsFromDate).Methods("GET")
 	router.HandleFunc("/hitec/crawl/tweets/mention/{account_name}/lang/{lang}", getTweetsInLang).Methods("GET")
@@ -25,6 +26,24 @@ func main() {
 	router.HandleFunc("/hitec/crawl/tweets/hashtag/{hashtag}/lang/{lang}", getTweetsWithHashtagInLang).Methods("GET")
 
 	log.Fatal(http.ListenAndServe(":9624", router))
+}
+
+func getAccountNameExists(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	accountName := params["account_name"]
+
+	accountNameExists := AccountNameExists(accountName)
+
+	w.Header().Set("Content-Type", "application/json")
+	response := ResponseMessage{}
+	response = response.Create(accountNameExists, accountName)
+	fmt.Println("response", response)
+	err := json.NewEncoder(w).Encode(response)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	} else {
+		w.WriteHeader(http.StatusOK)
+	}
 }
 
 func getTweetsFromAccountByDays(w http.ResponseWriter, r *http.Request) {
