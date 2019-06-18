@@ -30,8 +30,9 @@ func setupRouter() {
 	fmt.Println("SetUp")
 
 	router = mux.NewRouter()
-	// router.HandleFunc("/hitec/crawl/tweets/mention/{account_name}/history-in-days/{days}/lang/{lang}", getTweetsFromAccountByDays).Methods("GET")
-	// router.HandleFunc("/hitec/crawl/tweets/mention/{account_name}/from/{date}/lang/{lang}", getTweetsFromDate).Methods("GET")
+	router.HandleFunc("/hitec/crawl/tweets/{account_name}/exists", getAccountNameExists).Methods("GET")
+	router.HandleFunc("/hitec/crawl/tweets/mention/{account_name}/history-in-days/{days}/lang/{lang}", getTweetsFromAccountByDays).Methods("GET")
+	router.HandleFunc("/hitec/crawl/tweets/mention/{account_name}/from/{date}/lang/{lang}", getTweetsFromDate).Methods("GET")
 	router.HandleFunc("/hitec/crawl/tweets/mention/{account_name}/lang/{lang}/fast", getTweetsInLangFast).Methods("GET")
 	router.HandleFunc("/hitec/crawl/tweets/hashtag/{hashtag}/lang/{lang}", getTweetsWithHashtagInLang).Methods("GET")
 }
@@ -52,56 +53,57 @@ func executeRequest(req *http.Request) *httptest.ResponseRecorder {
 	return rr
 }
 
-// func TestGetTweetsFromAccountByDays(t *testing.T) {
-// 	fmt.Println("start TestTweetsFromAccountByDays")
-// 	var method = "GET"
-// 	var endpoint = "/hitec/crawl/tweets/mention/%s/history-in-days/%s/lang/%s"
+func TestGetTweetsFromAccountByDays(t *testing.T) {
+	fmt.Println("start TestTweetsFromAccountByDays")
+	var method = "GET"
+	var endpoint = "/hitec/crawl/tweets/mention/%s/history-in-days/%s/lang/%s"
 
-// 	/*
-// 	 * test for Success
-// 	 */
-// 	endpointSucess := fmt.Sprintf(endpoint, "VodafoneUK", "5", "en")
-// 	req := buildRequest(method, endpointSucess, nil, t)
-// 	rr := executeRequest(req)
+	/*
+	 * test for Success
+	 */
+	endpointSucess := fmt.Sprintf(endpoint, "VodafoneUK", "5", "en")
+	req := buildRequest(method, endpointSucess, nil, t)
+	rr := executeRequest(req)
 
-// 	if status := rr.Code; status != http.StatusOK {
-// 		t.Errorf("Status code differs. Expected %d .\n Got %d instead", http.StatusOK, status)
-// 	}
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("Status code differs. Expected %d .\n Got %d instead", http.StatusOK, status)
+	}
 
-// 	err := json.NewDecoder(rr.Body).Decode(&tweets)
-// 	if err != nil {
-// 		t.Errorf("Did not receive a proper formed json")
-// 	}
+	err := json.NewDecoder(rr.Body).Decode(&tweets)
+	if err != nil {
+		t.Errorf("Did not receive a proper formed json")
+	}
 
-// 	if len(tweets) <= 0 {
-// 		t.Errorf("response length differs. Expected %s .\n Got %d instead", "number greater than 0", len(tweets))
-// 	}
-// }
-// func TestGetTweetsFromDate(t *testing.T) {
-// 	fmt.Println("start TestTweetsFromDate")
-// 	var method = "GET"
-// 	var endpoint = "/hitec/crawl/tweets/mention/%s/from/%s/lang/%s"
+	if len(tweets) <= 0 {
+		t.Errorf("response length differs. Expected %s .\n Got %d instead", "number greater than 0", len(tweets))
+	}
+}
 
-// 	/*
-// 	 * test for Success
-// 	 */
-// 	endpointSucess := fmt.Sprintf(endpoint, "WindItalia", "2018-05-03", "it")
-// 	req := buildRequest(method, endpointSucess, nil, t)
-// 	rr := executeRequest(req)
+func TestGetTweetsFromDate(t *testing.T) {
+	fmt.Println("start TestTweetsFromDate")
+	var method = "GET"
+	var endpoint = "/hitec/crawl/tweets/mention/%s/from/%s/lang/%s"
 
-// 	if status := rr.Code; status != http.StatusOK {
-// 		t.Errorf("Status code differs. Expected %d .\n Got %d instead", http.StatusOK, status)
-// 	}
+	/*
+	 * test for Success
+	 */
+	endpointSucess := fmt.Sprintf(endpoint, "WindItalia", "2018-05-03", "it")
+	req := buildRequest(method, endpointSucess, nil, t)
+	rr := executeRequest(req)
 
-// 	err := json.NewDecoder(rr.Body).Decode(&tweets)
-// 	if err != nil {
-// 		t.Errorf("Did not receive a proper formed json")
-// 	}
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("Status code differs. Expected %d .\n Got %d instead", http.StatusOK, status)
+	}
 
-// 	if len(tweets) <= 0 {
-// 		t.Errorf("response length differs. Expected %s .\n Got %d instead", "number greater than 0", len(tweets))
-// 	}
-// }
+	err := json.NewDecoder(rr.Body).Decode(&tweets)
+	if err != nil {
+		t.Errorf("Did not receive a proper formed json")
+	}
+
+	if len(tweets) <= 0 {
+		t.Errorf("response length differs. Expected %s .\n Got %d instead", "number greater than 0", len(tweets))
+	}
+}
 
 func TestGetTweetsInLangFast(t *testing.T) {
 	fmt.Println("start TestGetTweetsInLangFast")
@@ -173,11 +175,21 @@ func TestGetAccountNameExists(t *testing.T) {
 	/*
 	 * test for Failure
 	 */
-	endpointFailure := fmt.Sprintf(endpoint, "VodafoneUK")
+	endpointFailure := fmt.Sprintf(endpoint, "qwergrgwfewfew")
 	req = buildRequest(method, endpointFailure, nil, t)
 	rr = executeRequest(req)
 
-	if status := rr.Code; status != http.StatusInternalServerError {
-		t.Errorf("Status code differs. Expected %d .\n Got %d instead", http.StatusInternalServerError, status)
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("Status code differs. Expected %d .\n Got %d instead", http.StatusOK, status)
+	}
+
+	var responseMessage ResponseMessage
+	err := json.NewDecoder(rr.Body).Decode(&responseMessage)
+	if err != nil {
+		t.Errorf("Did not receive a proper formed json")
+	}
+
+	if responseMessage.AccountExists {
+		t.Errorf("Status code differs. Expected %v .\n Got %v instead", false, responseMessage.AccountExists)
 	}
 }
