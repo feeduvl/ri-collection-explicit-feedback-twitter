@@ -40,7 +40,7 @@ func Crawl(l string, t TimeFrame, accountName string, paginate bool) []anaconda.
 		for _, tweet := range searchResult.Statuses {
 			tweets = append(tweets, tweet)
 			if tweet.Id < tweetMaxID {
-				tweetMaxID = tweet.Id
+				tweetMaxID = tweet.Id - 1
 			}
 		}
 		canPaginateTweets = paginate
