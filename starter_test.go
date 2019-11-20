@@ -54,11 +54,22 @@ func TestGetTweetsFromAccountByDays(t *testing.T) {
 	var endpoint = "/hitec/crawl/tweets/mention/%s/history-in-days/%s/lang/%s"
 
 	/*
+	 * test for failure
+	 */
+	endpointFailure := fmt.Sprintf(endpoint, "VodafoneUK", "a", "en")
+	req := buildRequest(method, endpointFailure, nil, t)
+	rr := executeRequest(req)
+
+	if status := rr.Code; status >= 200 && status < 300 {
+		t.Errorf("Status code differs. Expected failure.\n Got %d instead", status)
+	}
+
+	/*
 	 * test for Success
 	 */
 	endpointSucess := fmt.Sprintf(endpoint, "VodafoneUK", "5", "en")
-	req := buildRequest(method, endpointSucess, nil, t)
-	rr := executeRequest(req)
+	req = buildRequest(method, endpointSucess, nil, t)
+	rr = executeRequest(req)
 
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("Status code differs. Expected %d .\n Got %d instead", http.StatusOK, status)
@@ -104,6 +115,32 @@ func TestGetTweetsInLangFast(t *testing.T) {
 	fmt.Println("start TestGetTweetsInLangFast")
 	var method = "GET"
 	var endpoint = "/hitec/crawl/tweets/mention/%s/lang/%s/fast"
+
+	/*
+	 * test for Success
+	 */
+	endpointSucess := fmt.Sprintf(endpoint, "WindItalia", "it")
+	req := buildRequest(method, endpointSucess, nil, t)
+	rr := executeRequest(req)
+
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("Status code differs. Expected %d .\n Got %d instead", http.StatusOK, status)
+	}
+
+	err := json.NewDecoder(rr.Body).Decode(&tweets)
+	if err != nil {
+		t.Errorf("Did not receive a proper formed json")
+	}
+
+	if len(tweets) <= 0 {
+		t.Errorf("response length differs. Expected %s .\n Got %d instead", "number greater than 0", len(tweets))
+	}
+}
+
+func TestGetTweetsInLang(t *testing.T) {
+	fmt.Println("start TestGetTweetsInLang")
+	var method = "GET"
+	var endpoint = "/hitec/crawl/tweets/mention/%s/lang/%s"
 
 	/*
 	 * test for Success

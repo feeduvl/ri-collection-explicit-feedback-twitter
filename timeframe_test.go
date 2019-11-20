@@ -20,7 +20,8 @@ func TestTimeFrame_IsValid(t *testing.T) {
 		{"since before until", fields{since: "2018-05-02", until: "2018-05-03"}, true},
 		{"since after until", fields{since: "2018-05-03", until: "2018-05-02"}, false},
 		{"contains random string", fields{since: "abcd", until: "2018-05-02"}, false},
-		{"contains wrong date format", fields{since: "01.04.2018", until: "2018-05-02"}, false},
+		{"contains wrong since date format", fields{since: "01.04.2018", until: "2018-05-02"}, false},
+		{"contains wrong until date format", fields{since: "2018-05-03", until: "02.05.2018"}, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
