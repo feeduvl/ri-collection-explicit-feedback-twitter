@@ -15,17 +15,19 @@ import (
 
 func main() {
 	log.SetOutput(os.Stdout)
+	log.Fatal(http.ListenAndServe(":9624", makeRouter()))
+}
 
+func makeRouter() *mux.Router {
 	router := mux.NewRouter()
 	router.HandleFunc("/hitec/crawl/tweets/{account_name}/exists", getAccountNameExists).Methods("GET")
 	router.HandleFunc("/hitec/crawl/tweets/mention/{account_name}/history-in-days/{days}/lang/{lang}", getTweetsFromAccountByDays).Methods("GET")
 	router.HandleFunc("/hitec/crawl/tweets/mention/{account_name}/from/{date}/lang/{lang}", getTweetsFromDate).Methods("GET")
 	router.HandleFunc("/hitec/crawl/tweets/mention/{account_name}/lang/{lang}", getTweetsInLang).Methods("GET")
 	router.HandleFunc("/hitec/crawl/tweets/mention/{account_name}/lang/{lang}/fast", getTweetsInLangFast).Methods("GET")
-
 	router.HandleFunc("/hitec/crawl/tweets/hashtag/{hashtag}/lang/{lang}", getTweetsWithHashtagInLang).Methods("GET")
 
-	log.Fatal(http.ListenAndServe(":9624", router))
+	return router
 }
 
 func getAccountNameExists(w http.ResponseWriter, r *http.Request) {

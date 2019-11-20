@@ -30,7 +30,7 @@ func init() {
 	tweetMock.Lang = "it"
 
 	tweetMockShouldFail.CreatedAt = 20170503
-	tweetMock.CreatedAtFull = "Thu May 03 20:01:03 +0000 2018"
+	tweetMockShouldFail.CreatedAtFull = "Thu May 03 20:01:03 +0000 2018"
 	tweetMockShouldFail.FavoriteCount = 0
 	tweetMockShouldFail.RetweetCount = 1
 	tweetMockShouldFail.StatusID = "001"
