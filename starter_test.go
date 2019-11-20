@@ -29,12 +29,7 @@ func TestMain(m *testing.M) {
 func setupRouter() {
 	fmt.Println("SetUp")
 
-	router = mux.NewRouter()
-	router.HandleFunc("/hitec/crawl/tweets/{account_name}/exists", getAccountNameExists).Methods("GET")
-	router.HandleFunc("/hitec/crawl/tweets/mention/{account_name}/history-in-days/{days}/lang/{lang}", getTweetsFromAccountByDays).Methods("GET")
-	router.HandleFunc("/hitec/crawl/tweets/mention/{account_name}/from/{date}/lang/{lang}", getTweetsFromDate).Methods("GET")
-	router.HandleFunc("/hitec/crawl/tweets/mention/{account_name}/lang/{lang}/fast", getTweetsInLangFast).Methods("GET")
-	router.HandleFunc("/hitec/crawl/tweets/hashtag/{hashtag}/lang/{lang}", getTweetsWithHashtagInLang).Methods("GET")
+	router = makeRouter()
 }
 
 func buildRequest(method, endpoint string, payload io.Reader, t *testing.T) *http.Request {
