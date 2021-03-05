@@ -6,7 +6,7 @@ info:
   title: Get Tweets
   contact:
     email: stanik@informatik.uni-hamburg.de
-host: 217.172.12.199:9624
+host: 129.206.78.96:9624
 schemes:
   - http
 paths:
